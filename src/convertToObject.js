@@ -6,21 +6,23 @@
  * @return {object}
  */
 function convertToObject(sourceString) {
-  const style = sourceString.split(';');
-  const styleNoSpaces = [];
-  const arrayOfarrays = [];
+  const propsDividedToStrings = sourceString.split(';');
+  const correctCssRules = propsDividedToStrings.reduce(
+    (accum, propertyPair) => {
+      if (propertyPair.includes(':')) {
+        const propAndValue = propertyPair
+          .split(':')
+          .map((proper) => proper.trim());
 
-  for (const i of style) {
-    styleNoSpaces.push(i.trim());
-  }
+        accum[propAndValue[0]] = propAndValue[1];
+      }
 
-  for (const i of styleNoSpaces) {
-    arrayOfarrays.push(i.split(':'));
-  }
+      return accum;
+    },
+    {},
+  );
 
-  return arrayOfarrays.reduce((prev, elem) => {
-    return { ...prev, [elem[0]]: [elem[1]] };
-  }, {});
+  return correctCssRules;
 }
 
 module.exports = convertToObject;
